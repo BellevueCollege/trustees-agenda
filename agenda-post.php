@@ -29,11 +29,12 @@ function create_post_type() {
       'public' 				=> true,
       'supports'            => array( 'title', 'editor', 'comments','page-attributes',),
       'has_archive' 		=> true,   
-      'taxonomies'			=>  array( 'post_tag', 'Agendas' ),	
+      //'taxonomies'			=>  array( 'post_tag', 'Agendas' ),	
       'capability_type' 	=> 'page',
-      'rewrite' 			=> false,//array( 'slug' => "agendas" ),   
+      'rewrite' 			=> array( 'slug' => "agendas" ),   
     )
   );
+  flush_rewrite_rules();
 }
 
 
@@ -157,8 +158,9 @@ function save_custom_meta($post_id) {
 		    }
 	    }
     } // end foreach
+   
 }
-add_action('save_post', 'save_custom_meta');
+add_action('save_post', 'save_custom_meta',90);
 
 // change slug to include date in the permalink of a post
  
@@ -173,6 +175,7 @@ add_action('save_post', 'save_custom_meta');
  
 // $wp_rewrite->add_permastruct('agendas', '/agendas/%post_title%', false);
 // //$wp_rewrite->flush_rules( false );
+//  error_log("__________________________________________");
  
 // }
 // add_filter('post_type_link', 'tdd_permalinks', 10, 3);
@@ -203,18 +206,91 @@ add_action('save_post', 'save_custom_meta');
 // add_action('init', 'tdd_add_rewrite_rules');
 
 
+function custom_post_title($data , $postarr) {
+    error_log("post status value:".$data['post_status']);
 
-// display single post
+    if ( !in_array( $data['post_status'], array( 'draft', 'pending', 'auto-draft' ) ) ) {
+    //if(!isset($postarr['post_ID']) && !isset($data['post_name'])){
+        $custom_field_title = get_post_meta($postarr['post_ID'], 'meeting_date', true);
+          
+        if(isset($custom_field_title) && $custom_field_title != '')
+            $data['post_name'] = sanitize_title($custom_field_title);
+    }
+    return $data;
+}
+add_action ('wp_insert_post_data','custom_post_title', 99, 2 );
+//add_action ('wp_update_post','custom_post_title', 99, 2 );
+
+
+
+
+
 
 function get_custom_post_type_template($single_template) {
      global $post;
-
-     if ($post->post_type == 'agendas') {
+     //error_log("+++++++++++++++++++++++++++++");
+     $var1 = get_post_meta($post->post_id, 'meeting_date', true);
+     $var1 = sanitize_title($var1);
+     if ($post->post_type == 'agendas' || $post->post_type == $var1) {
+       
           $single_template = dirname( __FILE__ ) . '/single-agendas.php';
      }
      return $single_template;
 }
 add_filter( 'single_template', 'get_custom_post_type_template' );
+
+
+// add_filter('post_type_link', 'wpse33551_post_type_link', 1, 3);
+
+// function wpse33551_post_type_link( $link, $post = 0 ){
+//     $custom_field_title = get_post_meta($post->ID, 'meeting_date', true);
+//     if ( $post->post_type == 'agendas' && !empty($custom_field_title) ){
+//         return home_url( 'agendas/' . $custom_field_title);
+//     } else {
+//         return $link;
+//     }
+// }
+
+// add_action( 'init', 'wpse33551_rewrites_init' );
+
+// function wpse33551_rewrites_init(){
+//     add_rewrite_rule(
+//         'agendas/([0-9]+)?$',
+//         'index.php?post_type=agendas&p=$matches[1]',
+//         'top' );
+// }
+
+
+
+
+
+
+// function my_page_template_redirect()
+// {
+//     error_log("+++++++++++++++++++++++++++++");
+//     if( is_page( 'agendas' ) )
+//     {
+//         wp_redirect( dirname( __FILE__ ) . '/single-agendas.php' );
+//         exit();
+//     }
+// }
+// add_action( 'template_redirect', 'my_page_template_redirect' );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
