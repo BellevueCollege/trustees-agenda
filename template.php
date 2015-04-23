@@ -68,12 +68,11 @@ private function __construct() {
             'template_include',
             array( $this, 'view_project_template')
 
-        );
-        //echo "Heoll+++++++++++++++++++++++++";
+        );        
         // Add your templates to this array.
         $this->templates = array(
                 //'archive-agendas.php'     => 'board-agenda',
-            'index.php'     => 'board-agenda', // if you change the name from index to some other value you will see redirecting on already created pages failing. This is becoz wordpress ties the name of the page value with meta tag _wp_page_template
+            'archive-agendas.php'     => 'board-agenda', // if you change the name from index to some other value you will see redirecting on already created pages failing. This is becoz wordpress ties the name of the page value with meta tag _wp_page_template
         );
 }
 
@@ -116,33 +115,29 @@ public function register_project_templates( $atts ) {
  */
 
 public function view_project_template( $template ) {
-
-		//echo "+++++++++++++++++++++".$template;		
-        global $post;
-        //var_dump($post);
-        $post_meta = get_post_meta($post->ID, '_wp_page_template', true);
-        //$post_meta = get_post_meta($post->ID, 'agenda', true);
-        //echo "+++++++++++++++++++++".$post_meta;	
-        //error_log("++++++++++++++++++++++");	
-
-        if(isset($post_meta))
+			
+        global $post;     
+        if(is_object($post))
         {
-        	//echo $this->templates[$post_meta];
-	        if (!isset($this->templates[$post_meta] ) ) {
+            $post_meta = get_post_meta($post->ID, '_wp_page_template', true);          
 
-	                return $template;
-	        }
-	         $file = plugin_dir_path(__FILE__).  $post_meta;
-	         //echo $file;
+            if(isset($post_meta))
+            {            	
+    	        if (!isset($this->templates[$post_meta] ) ) {
 
-	        // Just to be safe, we check if the file exist first
+    	                return $template;
+    	        }
+    	         $file = plugin_dir_path(__FILE__).  $post_meta;  	         
 
-	        if( file_exists( $file ) ) {
-	        	
-	                return $file;
-	        }
-	        else { echo $file; }
-	    }
+    	        // Just to be safe, we check if the file exist first
+
+    	        if( file_exists( $file ) ) {
+    	        	
+    	                return $file;
+    	        }
+    	        else { echo $file; }
+    	    }
+        }
 
        
         return $template;
