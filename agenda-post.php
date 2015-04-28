@@ -166,6 +166,7 @@ add_action('save_post', 'save_agendas',10);
 
 function save_post_name($post_id)
 {
+   
     if(isset($post_id) && !empty($post_id))
     {
         $post = get_post($post_id);
@@ -175,14 +176,15 @@ function save_post_name($post_id)
             $post_name = sanitize_title($meeting_date);            
 
             // update the post, which calls save_post again
-            $update_post = array( 'ID' => $post_id, 'post_name' => $post_name );
-            if($post->post_name !== $post_name)
+            $update_post = array( 'ID' => $post_id, 'post_name' => $post_name);
+           //if($post->post_name !== $post_name  )
+            if(!strstr($post->post_name, $post_name)) // Checks is date exists in original postname
             {
                 // unhook this function so it doesn't loop infinitely
                 remove_action( 'save_post', 'save_post_name' );
                 $update_return_value = wp_update_post( $update_post);                
                 // re-hook this function
-                add_action( 'save_post', 'save_post_name' );
+                add_action( 'save_post', 'save_post_name' );               
             }
         }
     }   
