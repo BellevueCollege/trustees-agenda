@@ -10,8 +10,8 @@ Author URI: http://www.bellevuecollege.edu
 
 require_once('template.php'); 
 
-add_action( 'init', 'create_post_type' );
-function create_post_type() {
+add_action( 'init', 'create_agenda_post_type' );
+function create_agenda_post_type() {
 	//global $post;
 	//$meta = "";
 	///if($post)
@@ -38,11 +38,11 @@ function create_post_type() {
 
 
 // Add the Meta Box
-function add_custom_meta_box() {
+function add_agenda_custom_meta_box() {
     add_meta_box(
         'custom_meta_box', // $id
         'Custom Meta Box', // $title 
-        'show_custom_meta_box', // $callback
+        'show_agenda_custom_meta_box', // $callback
         'agendas', // $page
         'normal', // $context
         'high'); // $priority
@@ -55,7 +55,7 @@ function add_custom_meta_box() {
     wp_enqueue_style( 'jquery-ui-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/themes/smoothness/jquery-ui.css', true);
 
 }
-add_action('add_meta_boxes', 'add_custom_meta_box');
+add_action('add_meta_boxes', 'add_agenda_custom_meta_box');
 
 
 
@@ -80,7 +80,7 @@ $custom_meta_fields = array(
 );
 
 // The Callback
-function show_custom_meta_box() {
+function show_agenda_custom_meta_box() {
 global $custom_meta_fields, $post;
  
 // Use nonce for verification
@@ -164,7 +164,7 @@ add_action('save_post', 'save_agendas',10);
 
 
 
-function save_post_name($post_id)
+function save_agendas_post_name($post_id)
 {
    
     if(isset($post_id) && !empty($post_id))
@@ -181,19 +181,19 @@ function save_post_name($post_id)
             if(!strstr($post->post_name, $post_name)) // Checks is date exists in original postname
             {
                 // unhook this function so it doesn't loop infinitely
-                remove_action( 'save_post', 'save_post_name' );
+                remove_action( 'save_post', 'save_agendas_post_name' );
                 $update_return_value = wp_update_post( $update_post);                
                 // re-hook this function
-                add_action( 'save_post', 'save_post_name' );               
+                add_action( 'save_post', 'save_agendas_post_name' );               
             }
         }
     }   
    
 }
-add_action('save_post', 'save_post_name',20); 
+add_action('save_post', 'save_agendas_post_name',20); 
 
 
-function get_custom_post_type_single_template($single_template) {
+function get_custom_post_type_single_agenda_template($single_template) {
      global $post;
     
      $meeting_date = get_post_meta($post->post_id, 'meeting_date', true);
@@ -203,10 +203,10 @@ function get_custom_post_type_single_template($single_template) {
      }
      return $single_template;
 }
-add_filter( 'single_template', 'get_custom_post_type_single_template' );
+add_filter( 'single_template', 'get_custom_post_type_single_agenda_template' );
 
 
-function get_custom_post_type_archive_template($archive_template) {
+function get_custom_post_type_archive_agenda_template($archive_template) {
      global $post;   
      $meeting_date = get_post_meta($post->post_id, 'meeting_date', true);
      $meeting_date = sanitize_title($meeting_date);
@@ -215,7 +215,7 @@ function get_custom_post_type_archive_template($archive_template) {
      }
      return $archive_template;
 }
-add_filter( 'archive_template', 'get_custom_post_type_archive_template' );
+add_filter( 'archive_template', 'get_custom_post_type_archive_agenda_template' );
 
 
 
