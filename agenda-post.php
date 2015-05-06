@@ -54,6 +54,9 @@ function add_agenda_custom_meta_box() {
     wp_enqueue_script( 'agenda-script');
     wp_enqueue_style( 'jquery-ui-style', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/themes/smoothness/jquery-ui.css', true);
 
+    wp_register_style( 'agenda-style', plugins_url( '/agenda-style.css', __FILE__ ) );
+    wp_enqueue_style( 'agenda-style');
+
 }
 add_action('add_meta_boxes', 'add_agenda_custom_meta_box');
 
@@ -107,7 +110,7 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
 								{
 									
 						    			echo '<input type="text" name="'.$field['id'].'" id="'.$field['id'].'" value="'.$meta.'" class="meeting_date" size="30" />
-						        		<br /><span class="description">'.$field['desc'].'</span>';
+						        		<br /><span class="description error_text">'.$field['desc'].'</span>';
 						    	}
 						break;
 
@@ -120,7 +123,7 @@ echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce
 // Save the Data
 function save_agendas($post_id) {
     global $custom_meta_fields;
-    
+
     // verify nonce
     if(isset($_POST['custom_meta_box_nonce']))
     {
@@ -148,6 +151,11 @@ function save_agendas($post_id) {
 	        $old = get_post_meta($post_id, $field['id'], true);
 	        if(isset($_POST[$field['id']]))
 	        {
+            // if($field['id'] == "meeting_date" && empty($_POST[$field['id']]))
+            // {
+            //   error_log("meeting date empty");
+            //   $_POST['post_status'] = "draft";
+            // }
 		        $new = $_POST[$field['id']];
 		        if ($new && $new != $old) {                   
 		            update_post_meta($post_id, $field['id'], $new);
@@ -171,14 +179,21 @@ function save_agendas_post_name($post_id)
     {
         $post = get_post($post_id);
         $meeting_date = get_post_meta($post_id, 'meeting_date', true); 
+        $post_title = get_the_title($post_id);
         if(isset($meeting_date) && !empty($meeting_date)) 
         {  
             $post_name = sanitize_title($meeting_date);            
 
-            // update the post, which calls save_post again
+           
+        }
+        else if(!empty($post_title))
+        {
+             $post_name = sanitize_title($post_title); 
+        }
+         // update the post, which calls save_post again
             $update_post = array( 'ID' => $post_id, 'post_name' => $post_name);
            //if($post->post_name !== $post_name  )
-            if(!strstr($post->post_name, $post_name)) // Checks is date exists in original postname
+            if(!strstr($post->post_name, $post_name)) // Checks if date exists in original postname
             {
                 // unhook this function so it doesn't loop infinitely
                 remove_action( 'save_post', 'save_agendas_post_name' );
@@ -186,7 +201,6 @@ function save_agendas_post_name($post_id)
                 // re-hook this function
                 add_action( 'save_post', 'save_agendas_post_name' );               
             }
-        }
     }   
    
 }

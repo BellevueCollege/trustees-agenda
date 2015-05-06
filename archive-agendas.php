@@ -128,12 +128,14 @@ $page_flag = is_active_sidebar('page-widget-area') ? '1' : '0';
                       <a href="<?php the_permalink(); ?>">
                         <?php 
                           $value = get_post_meta( get_the_ID(), 'meeting_date', true );
-
+                          //$status = get_post_status(get_the_ID());
+                           //error_log("value:".$value);
+                          //error_log("status:".$status);
                           //the_title(); 
                           if(!empty($value))
                       {         
                         $display_date = date('F j, Y', strtotime($value));
-
+                        //error_log("value is not empty");
                         echo $display_date;
                       }
                         ?>
@@ -321,7 +323,8 @@ function posts_by_year() {
 
   // loop through posts, populating $years arrays
   foreach($posts as $post) {
-    $years[date('Y', strtotime($post->meeting_date))][] = $post;
+    if(isset($post->meeting_date) && !empty($post->meeting_date))
+          $years[date('Y', strtotime($post->meeting_date))][] = $post;
   }
 
   // reverse sort by year
