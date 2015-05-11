@@ -180,7 +180,9 @@ function save_agendas_post_name($post_id)
         $post = get_post($post_id);
         $meeting_date = get_post_meta($post_id, 'meeting_date', true); 
         $post_title = get_the_title($post_id);
-        if(isset($meeting_date) && !empty($meeting_date)) 
+        $post_type = get_post_type($post_id);
+        error_log("post type:". $post_type);
+        if(isset($meeting_date) && !empty($meeting_date) && isset($post_type) && $post_type == "agendas") 
         {  
             $post_name = sanitize_title($meeting_date);            
 
