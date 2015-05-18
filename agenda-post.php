@@ -4,7 +4,7 @@ Plugin Name: trustees-adenda
 Plugin URI: https://github.com/BellevueCollege/trustees-adenda
 Description: This plugin registers the 'Agenda' post type 
 Author: Bellevue College Technology Development and Communications
-Version: 1.0.0.0
+Version: 1.0.0.1
 Author URI: http://www.bellevuecollege.edu
 */
 
@@ -232,28 +232,3 @@ function get_custom_post_type_archive_agenda_template($archive_template) {
      return $archive_template;
 }
 add_filter( 'archive_template', 'get_custom_post_type_archive_agenda_template' );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-?>
-

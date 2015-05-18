@@ -333,6 +333,3 @@ function posts_by_year() {
   return $years;
 }
 
-
-
-?>
