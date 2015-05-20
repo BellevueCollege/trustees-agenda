@@ -4,7 +4,7 @@ Plugin Name: Board of trustees Agenda
 Plugin URI: https://github.com/BellevueCollege/trustees-adenda
 Description: This plugin registers the 'Agenda' post type 
 Author: Bellevue College Technology Development and Communications
-Version: 1.0.0.1
+Version: 1.0.1.0
 Author URI: http://www.bellevuecollege.edu
 */
 
@@ -168,7 +168,7 @@ function save_agendas($post_id) {
 
    
 }
-add_action('save_post', 'save_agendas',10); 
+add_action('save_post_agendas', 'save_agendas',10); 
 
 
 
@@ -198,15 +198,15 @@ function save_agendas_post_name($post_id)
             if(!strstr($post->post_name, $post_name)) // Checks if date exists in original postname
             {
                 // unhook this function so it doesn't loop infinitely
-                remove_action( 'save_post', 'save_agendas_post_name' );
+                remove_action( 'save_post_agendas', 'save_agendas_post_name' );
                 $update_return_value = wp_update_post( $update_post);                
                 // re-hook this function
-                add_action( 'save_post', 'save_agendas_post_name' );               
+                add_action( 'save_post_agendas', 'save_agendas_post_name' );               
             }
     }   
    
 }
-add_action('save_post', 'save_agendas_post_name',20); 
+add_action('save_post_agendas', 'save_agendas_post_name',20); 
 
 
 function get_custom_post_type_single_agenda_template($single_template) {
