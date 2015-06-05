@@ -72,7 +72,7 @@ private function __construct() {
         // Add your templates to this array.
         $this->templates = array(
                 //'archive-agendas.php'     => 'board-agenda',
-            'archive-agendas.php'     => 'board-agenda', // if you change the name from index to some other value you will see redirecting on already created pages failing. This is becoz wordpress ties the name of the page value with meta tag _wp_page_template
+            'archive-agendas.php'     => 'Trustees Agenda Archive', // if you change the name from index to some other value you will see redirecting on already created pages failing. This is becoz wordpress ties the name of the page value with meta tag _wp_page_template
         );
 }
 
