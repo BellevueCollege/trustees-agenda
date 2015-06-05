@@ -19,8 +19,8 @@ function create_agenda_post_type() {
   register_post_type( 'agendas',
     array(
       'labels'				=> array(
-      									'name' => __( 'agenda' ),
-      									'singular_name' => __( 'agenda' ) ,
+      									'name' => __( 'Agenda' ),
+      									'singular_name' => __( 'Agenda' ) ,
     									'add_new' => 'Add New Agenda',
     									'add_new_item' => 'Add New Agenda',
     									'edit_item' => 'Edit Agenda',
