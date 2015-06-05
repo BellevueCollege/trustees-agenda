@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Board of trustees Agenda
-Plugin URI: https://github.com/BellevueCollege/trustees-adenda
+Plugin URI: https://github.com/BellevueCollege/trustees-agenda
 Description: This plugin registers the 'Agenda' post type 
 Author: Bellevue College Technology Development and Communications
 Version: 1.1.1.1
