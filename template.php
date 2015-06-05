@@ -146,6 +146,3 @@ public function view_project_template( $template ) {
 }
 
 add_action( 'plugins_loaded', array( 'PageTemplater', 'get_instance' ) );
-
-
-?>
