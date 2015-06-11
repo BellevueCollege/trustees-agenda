@@ -318,7 +318,7 @@ function posts_by_year() {
     'numberposts' => -1,
     'meta_key'  => 'meeting_date',
     //'orderby' => 'meeting_date',
-    'orderby' => 'meta_value_num',
+    'orderby' => 'meta_value',
     'order' => 'DESC',
     'post_type' => 'agendas',
     'post_status' => 'publish'
