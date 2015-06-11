@@ -8,7 +8,7 @@ Version: 1.1.1.1
 Author URI: http://www.bellevuecollege.edu
 */
 
-xrequire_once('template.php'); 
+require_once('template.php'); 
 
 add_action( 'init', 'create_agenda_post_type' );
 function create_agenda_post_type() {
