@@ -41,7 +41,10 @@ get_header(); ?>
             } 
         }         
 
-         if ( is_single() ) : 	?>   
+         if ( is_single() ) : 
+
+            the_post();
+         	?>   
                <div class="content-padding">          
              
 
@@ -57,22 +60,27 @@ get_header(); ?>
 					?> <h1> <?php echo $display_date; ?> </h1> <?php
 				}
            ?> 
-               </div><!--.content-padding-->
-               <div class="content-padding">
+               <!-- </div> --><!--.content-padding-->
+              
                <?php
-               	$content = $post->post_content;
+               
+               	$content = the_content();//$post->post_content;
                 if($content=="") : ?>
                     <!-- Don't display empty the_content or surround divs -->
     <?php
 
-                else :     echo $content;
+                else : ?>
+                <!--  <div class="content-padding"> -->
+  <?php
+                    echo $content;//$content;
 ?>                 
-                          
+                  <!--  </div> --><!-- This is content -->           
        <?php                   
                 endif;                 
        		
-        	?>                
-                    </div><!-- This is content --> <?php   
+        	?>  
+          </div>     <!--.content-padding-->         
+                    <?php   
                 get_template_part('part-blogroll'); 
                  
              else: ?>

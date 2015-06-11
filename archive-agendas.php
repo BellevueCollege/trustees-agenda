@@ -118,10 +118,11 @@ $page_flag = is_active_sidebar('page-widget-area') ? '1' : '0';
                 <?php  
                 endif; 
 
-                // Display list of agendas
+                // Display list of agendas              
+
                 foreach(posts_by_year() as $year => $posts) : ?>
                 <h2><?php echo $year; ?></h2>
-
+               
                 <ul>
                   <?php foreach($posts as $post) : setup_postdata($post); ?>
                     <li>
@@ -129,7 +130,7 @@ $page_flag = is_active_sidebar('page-widget-area') ? '1' : '0';
                         <?php 
                           $value = get_post_meta( get_the_ID(), 'meeting_date', true );
                           //$status = get_post_status(get_the_ID());
-                           //error_log("value:".$value);
+                           error_log("value:".$value);
                           //error_log("status:".$status);
                           //the_title(); 
                           if(!empty($value))
@@ -315,7 +316,9 @@ function posts_by_year() {
   // get posts from WP
   $posts = get_posts(array(
     'numberposts' => -1,
-    'orderby' => 'meeting_date',
+    'meta_key'  => 'meeting_date',
+    //'orderby' => 'meeting_date',
+    'orderby' => 'meta_value',
     'order' => 'DESC',
     'post_type' => 'agendas',
     'post_status' => 'publish'
