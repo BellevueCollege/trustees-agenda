@@ -219,3 +219,104 @@ function save_agendas_post_name($post_id)
 }
 add_action('save_post_agendas', 'save_agendas_post_name',20);
 
+/* //////////////////////////////
+Add Sortable Column to Dashboard
+////////////////////////////// */
+
+add_filter('manage_edit-agendas_columns', 'add_new_agenda_columns');
+
+function add_new_agenda_columns($agenda_columns) {
+	$agenda_columns = array (
+		'cb' => '<input type="checkbox" />',
+		'title' => __( 'Title' ),
+		'meeting_date' => __( 'Meeting Date' ),
+		'special' => __( 'Special Meeting' )
+	);
+	return $agenda_columns;
+}
+
+add_action( 'manage_agendas_posts_custom_column', 'my_manage_agenda_columns', 10, 2 );
+
+function my_manage_agenda_columns( $column, $post_id ) {
+	global $post;
+
+	switch( $column ) {
+
+		/* If displaying the 'meeting_date' column. */
+		case 'meeting_date' :
+
+			/* Get the post meta. */
+			$meeting_date = get_post_meta( $post_id, 'meeting_date', true );
+
+			/* If no date is found, output a default message. */
+			if ( empty( $meeting_date ) )
+				echo __( 'Unknown' );
+
+			/* Output Date. */
+			else
+				echo __( $meeting_date );
+
+			break;
+
+		/* If displaying the 'special' column. */
+		case 'special' :
+
+			/* Get the post meta. */
+			$special = get_post_meta( $post_id, 'special_meeting', true );
+
+			/* If nothing is found, output No. */
+			if ( empty( $special ) )
+				echo __( 'No' );
+
+			/* If filled, output Yes. */
+			else
+				echo __( 'Yes' );
+
+			break;
+
+		/* Just break out of the switch statement for everything else. */
+		default :
+			break;
+	}
+}
+
+/* Sort by Date column */
+
+add_filter( 'manage_edit-agendas_sortable_columns', 'my_agenda_sortable_columns' );
+
+function my_agenda_sortable_columns( $columns ) {
+
+	$columns['meeting_date'] = 'meeting_date';
+
+	return $columns;
+}
+
+/* Only run our customization on the 'edit.php' page in the admin. */
+add_action( 'load-edit.php', 'my_edit_agenda_load' );
+
+function my_edit_agenda_load() {
+	add_filter( 'request', 'my_sort_agendas' );
+}
+
+/* Sorts the agendas. */
+function my_sort_agendas( $vars ) {
+
+	/* Check if we're viewing the 'agendas' post type. */
+	if ( isset( $vars['post_type'] ) && 'agendas' == $vars['post_type'] ) {
+
+		/* Check if 'orderby' is set to 'meeting_date'. */
+		if ( isset( $vars['orderby'] ) && 'meeting_date' == $vars['orderby'] ) {
+
+			/* Merge the query vars with our custom variables. */
+			$vars = array_merge(
+				$vars,
+				array(
+					'meta_key' => 'meeting_date',
+					'orderby' => 'meta_value'
+				)
+			);
+		}
+	}
+
+	return $vars;
+}
