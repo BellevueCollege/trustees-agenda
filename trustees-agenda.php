@@ -185,7 +185,6 @@ add_action('save_post_agendas', 'save_agendas',10);
 
 function save_agendas_post_name($post_id)
 {
-   
     if(isset($post_id) && !empty($post_id))
     {
         $post = get_post($post_id);
@@ -214,7 +213,7 @@ function save_agendas_post_name($post_id)
                 // re-hook this function
                 add_action( 'save_post_agendas', 'save_agendas_post_name' );               
             }
-    }   
+    }
    
 }
 add_action('save_post_agendas', 'save_agendas_post_name',20);
@@ -320,3 +319,69 @@ function my_sort_agendas( $vars ) {
 
 	return $vars;
 }
+
+
+/*
+Add Widget to Display Upcoming Agendas
+*/
+
+// Creating the widget
+class trustees_agenda_recent_widget extends WP_Widget {
+
+	function __construct() {
+		parent::__construct(
+			// Base ID of your widget
+			'agendas_widget',
+
+			// Widget name will appear in UI
+			__('Most Recent Agenda', 'agenda_widget'),
+
+			// Widget description
+			array( 'description' => __( 'Displays the most recent agenda', 'agenda_widget' ), )
+		);
+	}
+
+	// Creating widget front-end
+	// This is where the action happens
+	public function widget( $args, $instance ) {
+		$title = apply_filters( 'widget_title', $instance['title'] );
+		// before and after widget arguments are defined by themes
+		echo $args['before_widget'];
+		if ( ! empty( $title ) )
+			echo $args['before_title'] . $title . $args['after_title'];
+
+		// This is where you run the code and display the output
+		echo __( 'Hello, World!', 'agenda_widget' );
+		echo $args['after_widget'];
+	}
+
+	// Widget Backend
+	public function form( $instance ) {
+		if ( isset( $instance[ 'title' ] ) ) {
+			$title = $instance[ 'title' ];
+		}
+		else {
+			$title = __( 'New title', 'agenda_widget' );
+		}
+		// Widget admin form
+		?>
+			<p>
+				<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label>
+				<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
+			</p>
+		<?php
+	}
+
+	// Updating widget replacing old instances with new
+	public function update( $new_instance, $old_instance ) {
+		$instance = array();
+		$instance['title'] = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
+		return $instance;
+	}
+} // Class wpb_widget ends here
+
+// Register and load the widget
+function agendas_load_widget() {
+	register_widget( 'trustees_agenda_recent_widget' );
+}
+add_action( 'widgets_init', 'agendas_load_widget' );
