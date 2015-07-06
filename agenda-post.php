@@ -8,8 +8,6 @@ Version: 1.1
 Author URI: http://www.bellevuecollege.edu
 */
 
-require_once('template.php'); 
-
 add_action( 'init', 'create_agenda_post_type' );
 function create_agenda_post_type() {
 	//global $post;
@@ -221,14 +219,3 @@ function get_custom_post_type_single_agenda_template($single_template) {
 }
 add_filter( 'single_template', 'get_custom_post_type_single_agenda_template' );
 
-
-function get_custom_post_type_archive_agenda_template($archive_template) {
-     global $post;   
-     $meeting_date = get_post_meta($post->post_id, 'meeting_date', true);
-     $meeting_date = sanitize_title($meeting_date);
-     if ($post->post_type == 'agendas' || $post->post_type == $meeting_date) {       
-          $archive_template = dirname( __FILE__ ) . '/archive-agendas.php';
-     }
-     return $archive_template;
-}
-add_filter( 'archive_template', 'get_custom_post_type_archive_agenda_template' );
