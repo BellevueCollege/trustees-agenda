@@ -263,8 +263,27 @@ class trustees_agenda_recent_widget extends WP_Widget {
 		if ( ! empty( $title ) )
 			echo $args['before_title'] . $title . $args['after_title'];
 
-		// This is where you run the code and display the output
-		echo __( 'Hello, World!', 'agenda_widget' );
+		// Pull Posts
+		$agendas = new WP_Query();
+		$agendas->query( 'post_type=agendas&order=desc&orderby=meta_value&meta_key=meeting_date&posts_per_page=1' );
+		if( $agendas->found_posts > 0 ) {
+			echo '<ul class="agendas_widget">';
+				while ( $agendas->have_posts() ) {
+					$meeting_date_value = get_post_meta( get_the_ID(), 'meeting_date', true );
+					$agendas->the_post();
+					$listItem = '<li>';
+					$listItem .= '<a href="' . get_permalink() . '">';
+					$listItem .= 'Agenda for the ';
+					$listItem .= date('F j, Y', strtotime($meeting_date_value));
+					$listItem .= ' Meeting</li>';
+					echo $listItem;
+				}
+			echo '</ul>';
+			wp_reset_postdata();
+		}else{
+			echo '<p style="padding:25px;">No listing found</p>';
+		}
+
 		echo $args['after_widget'];
 	}
 
