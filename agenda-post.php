@@ -33,9 +33,22 @@ function create_agenda_post_type() {
       'rewrite' 			=> array( 'slug' => "agendas" ),   
     )
   );
-  flush_rewrite_rules();
 }
 
+function agendas_rewrite_flush() {
+	// First, we "add" the custom post type via the above written function.
+	// Note: "add" is written with quotes, as CPTs don't get added to the DB,
+	// They are only referenced in the post_type column with a post entry,
+	// when you add a post of this CPT.
+
+	// Both the custom post type and the custom taxonomy need to be called in this instance
+	create_agenda_post_type();
+
+	// ATTENTION: This is *only* done during plugin activation hook in this example!
+	// You should *NEVER EVER* do this on every page load!!
+	flush_rewrite_rules();
+}
+register_activation_hook( __FILE__, 'agendas_rewrite_flush' );
 
 // Add the Meta Box
 function add_agenda_custom_meta_box() {
