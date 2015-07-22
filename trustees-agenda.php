@@ -1,10 +1,19 @@
 <?php
 /*
-Plugin Name: Board of trustees Agenda
-Plugin URI: https://github.com/BellevueCollege/trustees-adenda
+Plugin Name: Board of Trustees Agenda
+Plugin URI: https://github.com/BellevueCollege/trustees-agenda
 Description: This plugin registers the 'Agenda' post type 
+<<<<<<< HEAD:agenda-post.php
 Author: Bellevue College Technology Development and Communications
-Version: 1.1
+<<<<<<< HEAD:trustees-agenda.php
+Version: 1.1.1
+=======
+Author: Bellevue College Information Technology Services
+Version: 1.1.0.1
+>>>>>>> 78e01b9c4822844d2cfd3a0f7e94400702d01c99:trustees-agenda.php
+=======
+Version: 1.1.0.1
+>>>>>>> d1a98b8391c4fc1e4e702b380cf4558b65d1fb34:agenda-post.php
 Author URI: http://www.bellevuecollege.edu
 */
 
@@ -17,8 +26,8 @@ function create_agenda_post_type() {
   register_post_type( 'agendas',
     array(
       'labels'				=> array(
-      									'name' => __( 'agenda' ),
-      									'singular_name' => __( 'agenda' ) ,
+      									'name' => __( 'Agenda' ),
+      									'singular_name' => __( 'Agenda' ) ,
     									'add_new' => 'Add New Agenda',
     									'add_new_item' => 'Add New Agenda',
     									'edit_item' => 'Edit Agenda',
@@ -31,9 +40,22 @@ function create_agenda_post_type() {
       'rewrite' 			=> array( 'slug' => "agendas" ),   
     )
   );
-  flush_rewrite_rules();
 }
 
+function agendas_rewrite_flush() {
+	// First, we "add" the custom post type via the above written function.
+	// Note: "add" is written with quotes, as CPTs don't get added to the DB,
+	// They are only referenced in the post_type column with a post entry,
+	// when you add a post of this CPT.
+
+	// Both the custom post type and the custom taxonomy need to be called in this instance
+	create_agenda_post_type();
+
+	// ATTENTION: This is *only* done during plugin activation hook in this example!
+	// You should *NEVER EVER* do this on every page load!!
+	flush_rewrite_rules();
+}
+register_activation_hook( __FILE__, 'agendas_rewrite_flush' );
 
 // Add the Meta Box
 function add_agenda_custom_meta_box() {
@@ -206,6 +228,7 @@ function save_agendas_post_name($post_id)
 }
 add_action('save_post_agendas', 'save_agendas_post_name',20); 
 
+<<<<<<< HEAD:agenda-post.php
 
 function get_custom_post_type_single_agenda_template($single_template) {
      global $post;
@@ -219,3 +242,121 @@ function get_custom_post_type_single_agenda_template($single_template) {
 }
 add_filter( 'single_template', 'get_custom_post_type_single_agenda_template' );
 
+=======
+function get_custom_post_type_archive_agenda_template($archive_template) {
+     global $post;   
+     $meeting_date = get_post_meta($post->post_id, 'meeting_date', true);
+     $meeting_date = sanitize_title($meeting_date);
+     if ($post->post_type == 'agendas' || $post->post_type == $meeting_date) {       
+          $archive_template = dirname( __FILE__ ) . '/archive-agendas.php';
+     }
+     return $archive_template;
+}
+add_filter( 'archive_template', 'get_custom_post_type_archive_agenda_template' );
+<<<<<<< HEAD:trustees-agenda.php
+=======
+
+
+/* //////////////////////////////
+Add Sortable Column to Dashboard
+////////////////////////////// */
+
+add_filter('manage_edit-agendas_columns', 'add_new_agenda_columns');
+
+function add_new_agenda_columns($agenda_columns) {
+	$agenda_columns = array (
+		'cb' => '<input type="checkbox" />',
+		'title' => __( 'Title' ),
+		'meeting_date' => __( 'Meeting Date' ),
+		'special' => __( 'Special Meeting' )
+	);
+	return $agenda_columns;
+}
+
+add_action( 'manage_agendas_posts_custom_column', 'my_manage_agenda_columns', 10, 2 );
+
+function my_manage_agenda_columns( $column, $post_id ) {
+	global $post;
+
+	switch( $column ) {
+
+		/* If displaying the 'meeting_date' column. */
+		case 'meeting_date' :
+
+			/* Get the post meta. */
+			$meeting_date = get_post_meta( $post_id, 'meeting_date', true );
+
+			/* If no date is found, output a default message. */
+			if ( empty( $meeting_date ) )
+				echo __( 'Unknown' );
+
+			/* Output Date. */
+			else
+				echo __( $meeting_date );
+
+			break;
+
+		/* If displaying the 'special' column. */
+		case 'special' :
+
+			/* Get the post meta. */
+			$special = get_post_meta( $post_id, 'special_meeting', true );
+
+			/* If nothing is found, output No. */
+			if ( empty( $special ) )
+				echo __( 'No' );
+
+			/* If filled, output Yes. */
+			else
+				echo __( 'Yes' );
+
+			break;
+
+		/* Just break out of the switch statement for everything else. */
+		default :
+			break;
+	}
+}
+
+/* Sort by Date column */
+
+add_filter( 'manage_edit-agendas_sortable_columns', 'my_agenda_sortable_columns' );
+
+function my_agenda_sortable_columns( $columns ) {
+
+	$columns['meeting_date'] = 'meeting_date';
+
+	return $columns;
+}
+
+/* Only run our customization on the 'edit.php' page in the admin. */
+add_action( 'load-edit.php', 'my_edit_agenda_load' );
+
+function my_edit_agenda_load() {
+	add_filter( 'request', 'my_sort_agendas' );
+}
+
+/* Sorts the agendas. */
+function my_sort_agendas( $vars ) {
+
+	/* Check if we're viewing the 'agendas' post type. */
+	if ( isset( $vars['post_type'] ) && 'agendas' == $vars['post_type'] ) {
+
+		/* Check if 'orderby' is set to 'meeting_date'. */
+		if ( isset( $vars['orderby'] ) && 'meeting_date' == $vars['orderby'] ) {
+
+			/* Merge the query vars with our custom variables. */
+			$vars = array_merge(
+				$vars,
+				array(
+					'meta_key' => 'meeting_date',
+					'orderby' => 'meta_value'
+				)
+			);
+		}
+	}
+
+	return $vars;
+}
+>>>>>>> d1a98b8391c4fc1e4e702b380cf4558b65d1fb34:agenda-post.php
+>>>>>>> b3e7ac649caacc1a27d12cfa5a1b28b397390394:trustees-agenda.php
