@@ -1,10 +1,10 @@
 <?php
 /*
-Plugin Name: Board of trustees Agenda
-Plugin URI: https://github.com/BellevueCollege/trustees-adenda
+Plugin Name: Board of Trustees Agenda
+Plugin URI: https://github.com/BellevueCollege/trustees-agenda
 Description: This plugin registers the 'Agenda' post type 
-Author: Bellevue College Technology Development and Communications
-Version: 1.1.1
+Author: Bellevue College Information Technology Services
+Version: 1.1.1.1
 Author URI: http://www.bellevuecollege.edu
 */
 
@@ -19,8 +19,8 @@ function create_agenda_post_type() {
   register_post_type( 'agendas',
     array(
       'labels'				=> array(
-      									'name' => __( 'agenda' ),
-      									'singular_name' => __( 'agenda' ) ,
+      									'name' => __( 'Agenda' ),
+      									'singular_name' => __( 'Agenda' ) ,
     									'add_new' => 'Add New Agenda',
     									'add_new_item' => 'Add New Agenda',
     									'edit_item' => 'Edit Agenda',
@@ -220,20 +220,6 @@ function save_agendas_post_name($post_id)
    
 }
 add_action('save_post_agendas', 'save_agendas_post_name',20); 
-
-
-function get_custom_post_type_single_agenda_template($single_template) {
-     global $post;
-    
-     $meeting_date = get_post_meta($post->post_id, 'meeting_date', true);
-     $meeting_date = sanitize_title($meeting_date);
-     if ($post->post_type == 'agendas' || $post->post_type == $meeting_date) {       
-          $single_template = dirname( __FILE__ ) . '/single-agendas.php';
-     }
-     return $single_template;
-}
-add_filter( 'single_template', 'get_custom_post_type_single_agenda_template' );
-
 
 function get_custom_post_type_archive_agenda_template($archive_template) {
      global $post;   
