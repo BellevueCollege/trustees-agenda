@@ -54,7 +54,7 @@ function add_agenda_custom_meta_box() {
 		'show_agenda_custom_meta_box', // $callback
 		'agendas', // $page
 		'normal', // $context
-		'high', // $priority
+		'high' // $priority
 	);
 
 	wp_enqueue_script( 'jquery-ui-datepicker' );
@@ -64,7 +64,7 @@ function add_agenda_custom_meta_box() {
 	wp_enqueue_style(
 		'jquery-ui-style',
 		'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/themes/smoothness/jquery-ui.css',
-		true,
+		true
 	);
 
 	wp_register_style( 'agenda-style', plugins_url( '/agenda-style.css', __FILE__ ) );
