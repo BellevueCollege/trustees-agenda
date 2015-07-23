@@ -356,13 +356,17 @@ class trustees_agenda_recent_widget extends WP_Widget {
 		if( $agendas->found_posts > 0 ) {
 			echo '<ul class="agendas_widget">';
 				while ( $agendas->have_posts() ) {
-					$meeting_date_value = get_post_meta( get_the_ID(), 'meeting_date', true );
 					$agendas->the_post();
+					$meeting_date_value = get_post_meta( get_the_ID(), 'meeting_date', true );
+					$is_special_meeting = get_post_meta( get_the_ID(), 'special_meeting', true );
 					$listItem = '<li>';
 					$listItem .= '<a href="' . get_permalink() . '">';
 					$listItem .= 'Agenda for the ';
 					$listItem .= date('F j, Y', strtotime($meeting_date_value));
-					$listItem .= ' Meeting</li>';
+					if ($is_special_meeting) {
+						$listItem .= ' Special';
+					}
+					$listItem .= ' Meeting</a></li>';
 					echo $listItem;
 				}
 			echo '</ul>';
