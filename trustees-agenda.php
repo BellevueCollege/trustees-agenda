@@ -4,8 +4,9 @@ Plugin Name: Board of Trustees Agenda
 Plugin URI: https://github.com/BellevueCollege/trustees-agenda
 Description: This plugin registers the 'Agenda' post type 
 Author: Bellevue College Information Technology Services
-Version: 1.2
+Version: 1.3
 Author URI: http://www.bellevuecollege.edu
+GitHub Plugin URI: bellevuecollege/trustees-agenda
 */
 
 add_action( 'init', 'create_agenda_post_type' );
@@ -13,18 +14,21 @@ function create_agenda_post_type() {
 	register_post_type( 'agendas',
 		array(
 			'labels' => array(
-				'name'          => __( 'Agenda' ),
-				'singular_name' => __( 'Agenda' ) ,
-				'add_new'       => 'Add New Agenda',
-				'add_new_item'  => 'Add New Agenda',
-				'edit_item'     => 'Edit Agenda',
-				'menu_name'     => 'Agenda Archive',
+				'name'              => __( 'Agenda' ),
+				'singular_name'     => __( 'Agenda' ) ,
+				'add_new'           => 'Add New Agenda',
+				'add_new_item'      => 'Add New Agenda',
+				'edit_item'         => 'Edit Agenda',
+				'menu_name'         => 'Agenda Archive',
 			),
-			'public'          => true,
-			'supports'        => array( 'title', 'editor', 'comments', 'page-attributes', ),
-			'has_archive'     => 'agendas',
-			'capability_type' => 'page',
-			'rewrite'         => array( 'slug' => "agendas" ),
+			'public'                => true,
+			'supports'              => array( 'title', 'editor', 'comments', 'page-attributes', ),
+			'has_archive'           => 'agendas',
+			'capability_type'       => 'page',
+			'rewrite'               => array( 'slug' => "agendas" ),
+			'show_in_rest'          => true,
+			'rest_base'             => 'agendas',
+			'rest_controller_class' => 'WP_REST_Posts_Controller',
 		)
 	);
 }
@@ -49,8 +53,8 @@ register_activation_hook( __FILE__, 'agendas_rewrite_flush' );
 // Add the Meta Box
 function add_agenda_custom_meta_box() {
 	add_meta_box(
-		'custom_meta_box', // $id
-		'Custom Meta Box', // $title
+		'agenda-details', // $id
+		'Agenda Details', // $title
 		'show_agenda_custom_meta_box', // $callback
 		'agendas', // $page
 		'normal', // $context
