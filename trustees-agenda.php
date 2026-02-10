@@ -50,154 +50,25 @@ function agendas_rewrite_flush() {
 }
 register_activation_hook( __FILE__, 'agendas_rewrite_flush' );
 
-// Add the Meta Box
-function add_agenda_custom_meta_box() {
-	add_meta_box(
-		'agenda-details', // $id
-		'Agenda Details', // $title
-		'show_agenda_custom_meta_box', // $callback
-		'agendas', // $page
-		'normal', // $context
-		'high' // $priority
-	);
-
-	wp_enqueue_script( 'jquery-ui-datepicker' );
-	$path = plugin_dir_path( __FILE__ );
-	wp_register_script( 'agenda-script', plugins_url( '/agenda.js', __FILE__ ) );
-	wp_enqueue_script( 'agenda-script');
-	wp_enqueue_style(
-		'jquery-ui-style',
-		'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/themes/smoothness/jquery-ui.css',
-		true
-	);
-
-	wp_register_style( 'agenda-style', plugins_url( '/agenda-style.css', __FILE__ ) );
-	wp_enqueue_style( 'agenda-style');
-
+// changing default save/load location to acf plugin folder
+add_filter('acf/settings/save_json', 'trustees_acf_json_save_point');
+function trustees_acf_json_save_point( $path ) {
+    
+    // Update path
+    $path = plugin_dir_path( __FILE__ ) . '/acf-json';
+    
+    // Return
+    return $path;
+    
 }
-add_action( 'add_meta_boxes', 'add_agenda_custom_meta_box' );
-
-$custom_meta_fields = array(
-	array(
-		'label' => 'Meeting Category',
-		'desc'  => 'Special Meeting',
-		'name'  => 'meeting_type',
-		'id'    => 'special_meeting',
-		'type'  => 'checkbox',
-	),
-	array(
-		'label' => 'Date of Meeting',
-		'desc'  => '',
-		'name'  => 'meeting_date',
-		'id'    => 'meeting_date',
-		'type'  => 'text',
-	),
-);
-
-// The Callback
-function show_agenda_custom_meta_box() {
-	global $custom_meta_fields, $post;
-
-	// Use nonce for verification
-	echo '<input type="hidden" name="custom_meta_box_nonce" value="'.wp_create_nonce(basename(__FILE__)).'" />';
-
-	// Begin the field table and loop
-	echo '<table class="form-table">';
-	foreach ($custom_meta_fields as $field) {
-		// get value of this field if it exists for this post
-		$meta = get_post_meta($post->ID, $field['id'], true);
-		// begin a table row with
-		echo '<tr>
-			<th><label for="'.$field['id'].'">'.$field['label'].'</label></th>
-			<td>';
-		switch($field['type']) {
-			// case items will go here
-			case 'checkbox':
-				echo '<input type="checkbox" name="'.$field['id'].'" id="'.$field['id'].'" ',$meta ? ' checked="checked"' : '','/>
-					<label for="'.$field['id'].'">'.$field['desc'].'</label>';
-			break;
-			// text
-			case 'text':
-				if($field['id'] == "meeting_date") {
-					echo '<input type="text" name="'.$field['id'].'" id="'.$field['id'].'" value="'.$meta.'" class="meeting_date" size="30" />
-						<br /><span class="description error_text">'.$field['desc'].'</span>';
-				}
-			break;
-
-		} //end switch
-				echo '</td></tr>';
-	} // end foreach
-	echo '</table>'; // end table
+add_filter('acf/settings/load_json', 'trustees_acf_json_load_point');
+function trustees_acf_json_load_point( $paths ) {
+    $paths[] = plugin_dir_path( __FILE__ ) . '/acf-json';
+    return $paths;
 }
-
-// Save the Data
-function save_agendas($post_id) {
-	global $custom_meta_fields;
-
-	// verify nonce
-	if( isset( $_POST['custom_meta_box_nonce'] ) ) {
-		if ( !wp_verify_nonce( $_POST['custom_meta_box_nonce'], basename(__FILE__) ) )
-			return $post_id;
-	}
-	// check autosave
-	if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE )
-		return $post_id;
-	// check permissions
-	if( isset($_POST['post_type']) ) {
-		if ( 'page' == $_POST['post_type'] ) {
-			if ( !current_user_can( 'edit_page', $post_id ) )
-				return $post_id;
-		} elseif ( !current_user_can('edit_post', $post_id) ) {
-			return $post_id;
-		}
-	}
-
-	// loop through fields and save the data
-	foreach ( $custom_meta_fields as $field ) {
-		if( isset( $field['id'] ) ) {
-			$old = get_post_meta($post_id, $field['id'], true);
-			if( isset( $_POST[$field['id']] ) ) {
-				$new = $_POST[$field['id']];
-				if ( $new && $new != $old ) {
-					update_post_meta($post_id, $field['id'], $new);
-				} elseif ( '' == $new && $old ) {
-					delete_post_meta($post_id, $field['id'], $old);
-				}
-			}
-		}
-	} // end foreach
-}
-add_action( 'save_post_agendas', 'save_agendas', 10 );
-
-
-function save_agendas_post_name($post_id) {
-	if( isset($post_id) && !empty($post_id) ) {
-		$post = get_post($post_id);
-		$meeting_date = get_post_meta($post_id, 'meeting_date', true);
-		$post_title = get_the_title($post_id);
-		$post_type = get_post_type($post_id);
-		if ( isset($meeting_date) && !empty($meeting_date) && isset($post_type) && $post_type == "agendas" ) {
-			$post_name = sanitize_title($meeting_date);
-		} else if ( !empty($post_title) ) {
-			$post_name = sanitize_title($post_title);
-		}
-		// update the post, which calls save_post again
-		$update_post = array( 'ID' => $post_id, 'post_name' => $post_name);
-		//if($post->post_name !== $post_name  )
-		if ( !strstr($post->post_name, $post_name) ) // Checks if date exists in original postname
-		{
-			// unhook this function so it doesn't loop infinitely
-			remove_action( 'save_post_agendas', 'save_agendas_post_name' );
-			$update_return_value = wp_update_post( $update_post);
-			// re-hook this function
-			add_action( 'save_post_agendas', 'save_agendas_post_name' );
-		}
-	}
-}
-add_action( 'save_post_agendas', 'save_agendas_post_name', 20 );
 
 /*
- * Add Sortable Column to Dashboard
+ * Add Sortable Column to Agendas Admin Dashboard
  */
 
 add_filter( 'manage_edit-agendas_columns', 'add_new_agenda_columns' );
@@ -215,8 +86,6 @@ function add_new_agenda_columns($agenda_columns) {
 add_action( 'manage_agendas_posts_custom_column', 'my_manage_agenda_columns', 10, 2 );
 
 function my_manage_agenda_columns( $column, $post_id ) {
-	global $post;
-
 	switch( $column ) {
 
 		/* If displaying the 'meeting_date' column. */
@@ -226,13 +95,13 @@ function my_manage_agenda_columns( $column, $post_id ) {
 			$meeting_date = get_post_meta( $post_id, 'meeting_date', true );
 
 			/* If no date is found, output a default message. */
-			if ( empty( $meeting_date ) )
+			if ( !empty( $meeting_date ) ){
+				// Determine if Ymd (ACF) or Y-m-d (Old)
+				echo date('F j, Y', strtotime($meeting_date));
+			}
+			else{
 				echo __( 'Unknown' );
-
-			/* Output Date. */
-			else
-				echo __( $meeting_date );
-
+			}
 			break;
 
 		/* If displaying the 'special' column. */
@@ -241,18 +110,11 @@ function my_manage_agenda_columns( $column, $post_id ) {
 			/* Get the post meta. */
 			$special = get_post_meta( $post_id, 'special_meeting', true );
 
-			/* If nothing is found, output No. */
-			if ( empty( $special ) )
-				echo __( 'No' );
-
-			/* If filled, output Yes. */
-			else
+			// Check for '1' (ACF True) or 'on' (Old Checkbox)
+			if ( $special == '1' || $special == 'on' ) 
 				echo __( 'Yes' );
-
-			break;
-
-		/* Just break out of the switch statement for everything else. */
-		default :
+			else 
+				echo __( 'No' );
 			break;
 	}
 }
@@ -358,12 +220,7 @@ class trustees_agenda_recent_widget extends WP_Widget {
 
 	// Widget Backend
 	public function form( $instance ) {
-		if ( isset( $instance[ 'title' ] ) ) {
-			$title = $instance[ 'title' ];
-		}
-		else {
-			$title = __( 'New title', 'agenda_widget' );
-		}
+		$title = isset($instance['title']) ? $instance['title'] : __( 'New title', 'agenda_widget' );
 		// Widget admin form
 		?>
 			<p>
@@ -379,10 +236,13 @@ class trustees_agenda_recent_widget extends WP_Widget {
 		$instance['title'] = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
 		return $instance;
 	}
-} // Class wpb_widget ends here
+}
 
 // Register and load the widget
 function agendas_load_widget() {
 	register_widget( 'trustees_agenda_recent_widget' );
 }
 add_action( 'widgets_init', 'agendas_load_widget' );
+?>
+
+
