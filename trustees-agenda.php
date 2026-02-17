@@ -9,68 +9,61 @@ Author URI: http://www.bellevuecollege.edu
 GitHub Plugin URI: bellevuecollege/trustees-agenda
 */
 
-add_action( 'init', 'create_agenda_post_type' );
-function create_agenda_post_type() {
-	register_post_type( 'agendas',
-		array(
-			'labels' => array(
-				'name'              => __( 'Agenda' ),
-				'singular_name'     => __( 'Agenda' ) ,
-				'add_new'           => 'Add New Agenda',
-				'add_new_item'      => 'Add New Agenda',
-				'edit_item'         => 'Edit Agenda',
-				'menu_name'         => 'Agenda Archive',
-			),
-			'public'                => true,
-			'supports'              => array( 'title', 'editor', 'comments', 'page-attributes', ),
-			'has_archive'           => 'agendas',
-			'capability_type'       => 'page',
-			'rewrite'               => array( 'slug' => "agendas" ),
-			'show_in_rest'          => true,
-			'rest_base'             => 'agendas',
-			'rest_controller_class' => 'WP_REST_Posts_Controller',
-		)
-	);
-}
-
-function agendas_rewrite_flush() {
-	/* First, we "add" the custom post type via the above written function.
-	 * Note: "add" is written with quotes, as CPTs don't get added to the DB,
-	 * They are only referenced in the post_type column with a post entry,
-	 * when you add a post of this CPT.
-
-	 * Both the custom post type and the custom taxonomy need to be called in this instance
-	 */
-	create_agenda_post_type();
-
-	/* ATTENTION: This is *only* done during plugin activation hook in this example!
-	 *You should *NEVER EVER* do this on every page load!!
-	 */
-	flush_rewrite_rules();
-}
-register_activation_hook( __FILE__, 'agendas_rewrite_flush' );
+//* WARNING: ACF must be installed and active for this Post Type to appear as it is no longer a WP CPT
 
 // changing default save/load location to acf plugin folder
 add_filter('acf/settings/save_json', 'trustees_acf_json_save_point');
 function trustees_acf_json_save_point( $path ) {
-    
-    // Update path
-    $path = plugin_dir_path( __FILE__ ) . '/acf-json';
-    
-    // Return
-    return $path;
-    
+    return plugin_dir_path( __FILE__ ) . '/acf-json';
 }
+
 add_filter('acf/settings/load_json', 'trustees_acf_json_load_point');
 function trustees_acf_json_load_point( $paths ) {
     $paths[] = plugin_dir_path( __FILE__ ) . '/acf-json';
     return $paths;
 }
 
-/*
- * Add Sortable Column to Agendas Admin Dashboard
- */
+//auto-rename post based on meeting date
+function save_agendas_post_rename( $post_id ) {
+	//run if "agendas"
+	if ( get_post_type( $post_id ) != 'agendas' ) {
+		return;
+	}
 
+	$meeting_date = get_field( 'meeting_date', $post_id );
+	$post_name = '';
+
+	if ( empty( $meeting_date ) ) {
+        return;
+    }
+
+	if ( ! empty( $meeting_date ) ) {
+		// ACF saves dates as Ymd (e.g. 20240210), old plugin used Y-m-d.
+		// ensure slug always uses same format
+		if( is_numeric( $meeting_date ) ) {
+			$slug_date = date( 'Y-m-d', strtotime( $meeting_date ) );
+		} else {
+			$slug_date = $meeting_date;
+		}
+	} 
+	// making sure no infinite looping occurs
+	// priority 20 ensures ACF has saved data first
+	remove_action( 'acf/save_post', 'save_agendas_post_rename', 20 );
+
+	//update post name
+	wp_update_post( array( 
+		'ID' => $post_id, 
+		'post_name' => sanitize_title( $slug_date )
+	) );
+
+	//Re-hooking
+	add_action( 'acf/save_post', 'save_agendas_post_rename', 20 );
+}
+add_action( 'save_post', 'save_agendas_post_rename', 20 );
+/*
+ * ADMIN COLUMNS
+ */
+//Add Sortable Column to Agendas Admin Dashboard
 add_filter( 'manage_edit-agendas_columns', 'add_new_agenda_columns' );
 
 function add_new_agenda_columns($agenda_columns) {
@@ -119,7 +112,7 @@ function my_manage_agenda_columns( $column, $post_id ) {
 	}
 }
 
-/* Sort by Date column */
+// SORTABLE COLUMNS
 
 add_filter( 'manage_edit-agendas_sortable_columns', 'my_agenda_sortable_columns' );
 
@@ -162,7 +155,7 @@ function my_sort_agendas( $vars ) {
 
 
 /*
- *Add Widget to Display Upcoming Agendas
+ * WIDGET to Display Upcoming Agendas
  */
 
 // Creating the widget
@@ -181,11 +174,9 @@ class trustees_agenda_recent_widget extends WP_Widget {
 		);
 	}
 
-	// Creating widget front-end
-	// This is where the action happens
+	// Creating widget front-end, This is where the action takes place
 	public function widget( $args, $instance ) {
 		$title = apply_filters( 'widget_title', $instance['title'] );
-		// before and after widget arguments are defined by themes
 		echo $args['before_widget'];
 		if ( ! empty( $title ) )
 			echo $args['before_title'] . $title . $args['after_title'];
@@ -244,5 +235,3 @@ function agendas_load_widget() {
 }
 add_action( 'widgets_init', 'agendas_load_widget' );
 ?>
-
-
