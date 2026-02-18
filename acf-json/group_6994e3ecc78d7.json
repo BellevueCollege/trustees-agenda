@@ -30,7 +30,7 @@
             "aria-label": "",
             "type": "date_picker",
             "instructions": "",
-            "required": 0,
+            "required": 1,
             "conditional_logic": 0,
             "wrapper": {
                 "width": "",
@@ -63,5 +63,5 @@
     "description": "",
     "show_in_rest": 0,
     "display_title": "",
-    "modified": 1771365367
+    "modified": 1771452208
 }
