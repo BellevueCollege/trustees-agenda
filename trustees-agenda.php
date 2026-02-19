@@ -24,9 +24,9 @@ function trustees_acf_json_load_point( $paths ) {
 }
 
 //auto-rename post based on meeting date
-//* Uses direct DB update to prevent "Update Failed" errors and Infinite Loops.
 // priority 20 ensures ACF has saved data first
-add_action( 'acf/save_post', 'trustees_agenda_update_slug', 20 );
+add_action( 'acf/save_post', 'save_agendas_post_rename', 20 );
+
 function save_agendas_post_rename( $post_id ) {
 	//safety check- If this is a revision, autosave, or we are trashing the post, STOP.
 	if ( wp_is_post_revision( $post_id ) || wp_is_post_autosave( $post_id ) ) {
@@ -34,17 +34,16 @@ function save_agendas_post_rename( $post_id ) {
 	}
 
 	// deletion or trash = do not run
-	if ( get_post_status( $post_id ) === 'trash' ) {
+	if ( get_post_status( $post_id ) === 'trash'|| get_post_status( $post_id ) === 'auto-draft' ) {
         return;
     }
 
-	//run if "agendas"
 	if ( get_post_type( $post_id ) != 'agendas' ) {
 		return;
 	}
 
+	//Get date
 	$meeting_date = get_field( 'meeting_date', $post_id );
-	$post_name = '';
 
 	// this should rarely be empty, but keep this just in case
 	if ( empty( $meeting_date ) ) {
@@ -58,18 +57,26 @@ function save_agendas_post_rename( $post_id ) {
 		} else {
 			$slug_date = $meeting_date;
 		}
-// use $wpdb to update the slug directly in the database. 
-// This bypasses WordPress hooks entirely preventing looping & UI error being thrown
-	global $wpdb;
 
-	//update post slug
-	$wpdb->update( 
-		$wpdb->posts, 
-		array( 'post_name' => sanitize_title( $slug_date ) ),
-		array( 'ID' => $post_id 
-		) );
+		$new_slug = sanitize_title( $slug_date );
+
+// Only update if the current slug doesn't match the new date
+$current_agenda = get_post( $post_id );
+if ( $current_agenda->post_name === $new_slug ) {
+	return;
 }
-add_action( 'save_post', 'save_agendas_post_rename', 20 );
+
+//Safe Update
+remove_action( 'acf/save_post', 'save_agendas_post_rename', 20 );
+
+wp_update_post( array(
+	'ID' => $post_id,
+	'post_name' => $new_slug
+));
+
+add_action( 'acf/save_post', 'save_agendas_post_rename', 20 );
+}
+
 /*
  * ADMIN COLUMNS
  */
