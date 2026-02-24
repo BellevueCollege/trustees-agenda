@@ -1,36 +1,15 @@
 {
-    "key": "group_6994e3ecc78d7",
-    "title": "Agenda Details",
+    "key": "group_699ce1bc8aa37",
+    "title": "Action Item Details",
     "fields": [
         {
-            "key": "field_698b80e1229ee",
-            "label": "Special Meeting",
-            "name": "special_meeting",
-            "aria-label": "",
-            "type": "true_false",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "message": "",
-            "default_value": 0,
-            "allow_in_bindings": 0,
-            "ui": 0,
-            "ui_on_text": "",
-            "ui_off_text": ""
-        },
-        {
-            "key": "field_698b826150b29",
-            "label": "Date of Meeting",
-            "name": "meeting_date",
+            "key": "field_699ce1bcf15c2",
+            "label": "Date",
+            "name": "date",
             "aria-label": "",
             "type": "date_picker",
             "instructions": "",
-            "required": 1,
+            "required": 0,
             "conditional_logic": 0,
             "wrapper": {
                 "width": "",
@@ -63,5 +42,5 @@
     "description": "",
     "show_in_rest": 0,
     "display_title": "",
-    "modified": 1771893521
+    "modified": 1771892241
 }
