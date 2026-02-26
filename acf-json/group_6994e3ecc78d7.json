@@ -42,6 +42,34 @@
             "first_day": 1,
             "default_to_current_date": 0,
             "allow_in_bindings": 0
+        },
+        {
+            "key": "field_699e4b904db13",
+            "label": "Related Action Items",
+            "name": "related_action_items",
+            "aria-label": "",
+            "type": "post_object",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "action-item"
+            ],
+            "post_status": "",
+            "taxonomy": "",
+            "return_format": "object",
+            "multiple": 1,
+            "allow_null": 0,
+            "allow_in_bindings": 0,
+            "bidirectional": 0,
+            "ui": 1,
+            "bidirectional_target": []
+        },
         }
     ],
     "location": [

@@ -21,6 +21,60 @@
             "first_day": 1,
             "default_to_current_date": 0,
             "allow_in_bindings": 0
+        },
+        {
+            "key": "field_699e396777790",
+            "label": "Associated Agenda",
+            "name": "associated-agenda",
+            "aria-label": "",
+            "type": "post_object",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "agendas"
+            ],
+            "post_status": "",
+            "taxonomy": "",
+            "return_format": "object",
+            "multiple": 0,
+            "allow_null": 0,
+            "allow_in_bindings": 0,
+            "bidirectional": 0,
+            "ui": 1,
+            "bidirectional_target": []
+        },
+        {
+            "key": "field_699e4cfd43878",
+            "label": "Related Resolutions",
+            "name": "related_resolutions",
+            "aria-label": "",
+            "type": "post_object",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "resolution"
+            ],
+            "post_status": "",
+            "taxonomy": "",
+            "return_format": "object",
+            "multiple": 0,
+            "allow_null": 0,
+            "allow_in_bindings": 0,
+            "bidirectional": 0,
+            "ui": 1,
+            "bidirectional_target": []
         }
     ],
     "location": [
@@ -28,7 +82,7 @@
             {
                 "param": "post_type",
                 "operator": "==",
-                "value": "agendas"
+                "value": "action-item"
             }
         ]
     ],
@@ -42,5 +96,5 @@
     "description": "",
     "show_in_rest": 0,
     "display_title": "",
-    "modified": 1771892241
+    "modified": 1772064588
 }
