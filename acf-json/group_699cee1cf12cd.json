@@ -45,9 +45,11 @@
             "multiple": 0,
             "allow_null": 0,
             "allow_in_bindings": 0,
-            "bidirectional": 0,
-            "ui": 1,
-            "bidirectional_target": []
+            "bidirectional": 1,
+            "bidirectional_target": [
+                "field_699e4cfd43878"
+            ],
+            "ui": 1
         },
         {
             "key": "field_699e3b8f596c4",
@@ -72,9 +74,11 @@
             "multiple": 0,
             "allow_null": 0,
             "allow_in_bindings": 0,
-            "bidirectional": 0,
-            "ui": 1,
-            "bidirectional_target": []
+            "bidirectional": 1,
+            "bidirectional_target": [
+                "field_699e4cfd43878"
+            ],
+            "ui": 1
         }
     ],
     "location": [
@@ -96,5 +100,5 @@
     "description": "",
     "show_in_rest": 0,
     "display_title": "",
-    "modified": 1772064662
+    "modified": 1773781675
 }

@@ -4,7 +4,7 @@ Plugin Name: Board of Trustees Agenda
 Plugin URI: https://github.com/BellevueCollege/trustees-agenda
 Description: This plugin registers the 'Agenda' post type 
 Author: Bellevue College Information Technology Services
-Version: 1.3
+Version: 1.4
 Author URI: http://www.bellevuecollege.edu
 GitHub Plugin URI: bellevuecollege/trustees-agenda
 */
@@ -14,13 +14,23 @@ GitHub Plugin URI: bellevuecollege/trustees-agenda
 // changing default save/load location to acf plugin folder
 add_filter('acf/settings/save_json', 'trustees_acf_json_save_point');
 function trustees_acf_json_save_point( $path ) {
-    return plugin_dir_path( __FILE__ ) . '/acf-json';
+    return plugin_dir_path( __FILE__ ) . 'acf-json';
 }
 
 add_filter('acf/settings/load_json', 'trustees_acf_json_load_point');
 function trustees_acf_json_load_point( $paths ) {
-    $paths[] = plugin_dir_path( __FILE__ ) . '/acf-json';
+	// Remove original path and add plugin path
+    unset($paths[0]);
+    $paths[] = plugin_dir_path( __FILE__ ) . 'acf-json';
     return $paths;
+}
+
+//Killing theme's default agenda so it doesn't hijack plugin
+add_action( 'init', 'trustees_remove_ghost_post_type', 99 );
+function trustees_remove_ghost_post_type() {
+    if ( post_type_exists( 'agenda' ) ) {
+        unregister_post_type( 'agenda' );
+    }
 }
 
 //auto-rename post based on meeting date
