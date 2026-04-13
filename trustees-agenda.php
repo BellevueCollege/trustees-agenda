@@ -20,7 +20,6 @@ function trustees_acf_json_save_point( $path ) {
 add_filter('acf/settings/load_json', 'trustees_acf_json_load_point');
 function trustees_acf_json_load_point( $paths ) {
 	// Remove original path and add plugin path
-    unset($paths[0]);
     $paths[] = plugin_dir_path( __FILE__ ) . 'acf-json';
     return $paths;
 }
