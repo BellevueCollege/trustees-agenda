@@ -1,0 +1,70 @@
+{
+    "key": "group_69c6a008dbbcf",
+    "title": "Sitewide Notice fields",
+    "fields": [
+        {
+            "key": "field_69c6a009a5799",
+            "label": "Display Sitewide Notice",
+            "name": "display_notice",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 0,
+            "allow_in_bindings": 0,
+            "ui_on_text": "",
+            "ui_off_text": "",
+            "ui": 1
+        },
+        {
+            "key": "field_69c6a05fa579a",
+            "label": "Sitewide Notice Text",
+            "name": "sitewide_notice_text",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "Sitewide Notice should be used for temporary notices such as office closures, temporary moves, etc. This notice will display on every page of your website. Please keep this as short as possible, and avoid using complex formatting.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "allow_in_bindings": 0,
+            "tabs": "visual",
+            "toolbar": "basic",
+            "media_upload": 0,
+            "delay": 0
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "sitewide-notice"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "display_title": "",
+    "allow_ai_access": false,
+    "ai_description": "",
+    "modified": 1776968750
+}
