@@ -5,7 +5,7 @@
         {
             "key": "field_699cee1d68d48",
             "label": "Date",
-            "name": "date",
+            "name": "meeting_date",
             "aria-label": "",
             "type": "date_picker",
             "instructions": "",
@@ -24,7 +24,7 @@
         },
         {
             "key": "field_699e3a9a65fb5",
-            "label": "Associated Action Item",
+            "label": "Related Action Item",
             "name": "associated_action_item",
             "aria-label": "",
             "type": "post_object",
@@ -43,7 +43,7 @@
             "taxonomy": "",
             "return_format": "object",
             "multiple": 0,
-            "allow_null": 0,
+            "allow_null": 1,
             "allow_in_bindings": 0,
             "bidirectional": 1,
             "bidirectional_target": [
@@ -53,7 +53,7 @@
         },
         {
             "key": "field_699e3b8f596c4",
-            "label": "Associated Agenda",
+            "label": "Related Agenda",
             "name": "associated_agenda",
             "aria-label": "",
             "type": "post_object",
@@ -72,7 +72,7 @@
             "taxonomy": "",
             "return_format": "object",
             "multiple": 0,
-            "allow_null": 0,
+            "allow_null": 1,
             "allow_in_bindings": 0,
             "bidirectional": 1,
             "bidirectional_target": [
@@ -100,5 +100,5 @@
     "description": "",
     "show_in_rest": 0,
     "display_title": "",
-    "modified": 1773781675
+    "modified": 1777938529
 }

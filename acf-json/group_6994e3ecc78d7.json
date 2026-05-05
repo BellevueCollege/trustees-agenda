@@ -64,7 +64,7 @@
             "taxonomy": "",
             "return_format": "object",
             "multiple": 1,
-            "allow_null": 0,
+            "allow_null": 1,
             "allow_in_bindings": 0,
             "bidirectional": 1,
             "bidirectional_target": [
@@ -93,7 +93,7 @@
             "taxonomy": "",
             "return_format": "object",
             "multiple": 1,
-            "allow_null": 0,
+            "allow_null": 1,
             "allow_in_bindings": 0,
             "bidirectional": 1,
             "bidirectional_target": [
@@ -121,5 +121,5 @@
     "description": "",
     "show_in_rest": 0,
     "display_title": "",
-    "modified": 1773781636
+    "modified": 1777938491
 }
