@@ -76,7 +76,7 @@
             "allow_in_bindings": 0,
             "bidirectional": 1,
             "bidirectional_target": [
-                "field_699e4cfd43878"
+                "field_699e4c1359f63"
             ],
             "ui": 1
         }
@@ -100,5 +100,5 @@
     "description": "",
     "show_in_rest": 0,
     "display_title": "",
-    "modified": 1777938529
+    "modified": 1778280155
 }
