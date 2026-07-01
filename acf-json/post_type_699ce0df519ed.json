@@ -56,7 +56,7 @@
     "rest_base": "",
     "rest_namespace": "wp\/v2",
     "rest_controller_class": "WP_REST_Posts_Controller",
-    "menu_position": "",
+    "menu_position": 22,
     "menu_icon": {
         "type": "dashicons",
         "value": "dashicons-admin-post"
@@ -71,10 +71,11 @@
         "custom-fields"
     ],
     "taxonomies": "",
-    "has_archive": false,
-    "has_archive_slug": "",
+    "has_archive": true,
+    "has_archive_slug": "action-items",
     "rewrite": {
-        "permalink_rewrite": "post_type_key",
+        "permalink_rewrite": "custom_permalink",
+        "slug": "action-items",
         "with_front": "1",
         "feeds": "0",
         "pages": "1"
@@ -85,5 +86,5 @@
     "delete_with_user": false,
     "register_meta_box_cb": "",
     "enter_title_here": "",
-    "modified": 1771888880
+    "modified": 1778022878
 }

@@ -5,7 +5,7 @@
         {
             "key": "field_699cee1d68d48",
             "label": "Date",
-            "name": "date",
+            "name": "meeting_date",
             "aria-label": "",
             "type": "date_picker",
             "instructions": "",
@@ -24,7 +24,7 @@
         },
         {
             "key": "field_699e3a9a65fb5",
-            "label": "Associated Action Item",
+            "label": "Related Action Item",
             "name": "associated_action_item",
             "aria-label": "",
             "type": "post_object",
@@ -43,15 +43,17 @@
             "taxonomy": "",
             "return_format": "object",
             "multiple": 0,
-            "allow_null": 0,
+            "allow_null": 1,
             "allow_in_bindings": 0,
-            "bidirectional": 0,
-            "ui": 1,
-            "bidirectional_target": []
+            "bidirectional": 1,
+            "bidirectional_target": [
+                "field_699e4cfd43878"
+            ],
+            "ui": 1
         },
         {
             "key": "field_699e3b8f596c4",
-            "label": "Associated Agenda",
+            "label": "Related Agenda",
             "name": "associated_agenda",
             "aria-label": "",
             "type": "post_object",
@@ -70,11 +72,13 @@
             "taxonomy": "",
             "return_format": "object",
             "multiple": 0,
-            "allow_null": 0,
+            "allow_null": 1,
             "allow_in_bindings": 0,
-            "bidirectional": 0,
-            "ui": 1,
-            "bidirectional_target": []
+            "bidirectional": 1,
+            "bidirectional_target": [
+                "field_699e4c1359f63"
+            ],
+            "ui": 1
         }
     ],
     "location": [
@@ -96,5 +100,5 @@
     "description": "",
     "show_in_rest": 0,
     "display_title": "",
-    "modified": 1772064662
+    "modified": 1778280155
 }
