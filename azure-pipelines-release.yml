@@ -1,0 +1,35 @@
+# ============================================================
+# Production Release Pipeline
+# ============================================================
+
+trigger: none
+pr: none
+
+resources:
+  repositories:
+    - repository: templates
+      type: github
+      name: BellevueCollege/bc-wordpress-devops-templates
+      endpoint: github-service-connection
+
+  pipelines:
+    - pipeline: ci
+      source: 'trustees-agenda'
+      trigger:
+        branches:
+          include:
+            - 'refs/tags/v*'
+
+extends:
+  template: templates/release/plugin-release.yml@templates
+  parameters:
+
+    pluginName: 'trustees-agenda'
+    githubRepo: 'trustees-agenda'
+
+    productionEnvironments:
+      - name: KinstaProd
+        displayName: 'Kinsta: Production'
+        environment: kinsta-wwwbellevuecollegeedu
+        sshServiceConnection: 'wwwbellevuecollegeedu'
+        variableGroup: kinsta-wwwbellevuecollegeedu
